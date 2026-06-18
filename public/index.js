@@ -6,13 +6,13 @@ let campaignTransmitter = { active: false, paused: false, currentIndex: 0, timer
 
 // Resume Profile State & Default Values (Parsed from Sai_Harshitha_Mandapalli.pdf)
 const DEFAULT_RESUME = {
-  name: 'Sai Harshitha Mandapalli',
-  email: 'saiharshithamandapalli@gmail.com',
-  phone: '+91-7672044351',
-  linkedin: 'https://linkedin.com/in/sai-harshitha',
-  github: 'https://github.com/harshitha-mandapalli',
-  skills: 'Java, JavaScript, Python, C/C++, SQL, Node.js, Express, MongoDB, MySQL, REST API, React, HTML5, CSS3, Tailwind CSS, Playwright, Postman, GPT-4o, Prompt Engineering, CI/CD',
-  highlights: '• Software Engineer at Inncircles Technologies (Nov 2025 – Present): Designed and implemented scalable backend features using Node.js & Express, optimized MongoDB schemas (20% latency reduction), built 30+ REST endpoints.\n• AI Test Case Generator project: Built MERN tool using GPT-4o prompting and JSON schema to automate test generation, reducing manual writing effort by 80%.\n• Quality & Automation: Reduced regression cycle time by 40% using Playwright E2E automation suites.'
+  name: '',
+  email: '',
+  phone: '',
+  linkedin: '',
+  github: '',
+  skills: '',
+  highlights: ''
 };
 
 let userResume = { ...DEFAULT_RESUME };
