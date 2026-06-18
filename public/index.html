@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Extract company names, roles, skills, and email addresses from Hacker News 'Who is Hiring?' threads instantly with this sleek extractor dashboard.">
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="HNHIRING Email & Job Extractor">
+  <meta property="og:description"
+    content="Extract company names, roles, skills, and email addresses from Hacker News 'Who is Hiring?' threads instantly.">
+  <meta property="og:type" content="website">
+
+  <title>HNHIRING Email & Job Extractor</title>
+
+  <!-- Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+  <!-- Ambient background glow elements -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <div class="app-container">
+    <!-- Header Area -->
+    <header class="app-header">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <i class="fa-solid fa-envelope-open-text"></i>
+        </div>
+        <div class="logo-text">
+          <h1>HN<span>Hiring</span></h1>
+          <p>Email & Job Scraper</p>
+        </div>
+      </div>
+      <p class="app-subtitle">Instantly extract company names, roles, key skills, and contact emails from Hacker News
+        "Who is Hiring?" listings.</p>
+    </header>
+
+    <!-- Scraper Input Form -->
+    <main class="main-content">
+      <section class="extractor-form-section card">
+        <div class="mode-tabs">
+          <button type="button" class="mode-tab active" id="btnModeScraper">
+            <i class="fa-solid fa-globe"></i> Scrape Website
+          </button>
+          <button type="button" class="mode-tab" id="btnModeDirect">
+            <i class="fa-solid fa-envelope"></i> Paste Email List
+          </button>
+        </div>
+
+        <form id="extractionForm" class="extractor-form">
+          <div class="input-wrapper" id="scraperInputGroup">
+            <i class="fa-solid fa-link input-icon"></i>
+            <input type="url" id="urlInput"
+              placeholder="Paste job post link (e.g. https://hnhiring.com/technologies/react or news.ycombinator.com)"
+              autocomplete="off">
+            <button type="button" id="clearBtn" class="clear-btn" title="Clear input">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="input-wrapper hidden" id="directInputGroup" style="width: 100%;">
+            <textarea id="directEmailsInput"
+              placeholder="Paste email addresses here (one per line, space-separated, or comma-separated)..."
+              rows="3"></textarea>
+          </div>
+
+          <button type="submit" id="extractBtn" class="extract-btn">
+            <span class="btn-text">Extract Emails</span>
+            <i class="fa-solid fa-wand-magic-sparkles btn-icon"></i>
+          </button>
+        </form>
+        <div id="errorContainer" class="error-container hidden">
+          <i class="fa-solid fa-triangle-exclamation error-icon"></i>
+          <span id="errorMessage"></span>
+        </div>
+      </section>
+
+      <!-- Resume Profile Section -->
+      <section class="resume-profile-section card collapsed" id="resumeSection">
+        <header class="resume-header" id="resumeHeader">
+          <div class="resume-header-left">
+            <i class="fa-solid fa-file-invoice resume-icon"></i>
+            <div>
+              <h3>Resume Profile: <span id="profileSummaryName">Sai Harshitha Mandapalli</span></h3>
+              <p id="profileSummaryMeta">Software Engineer • MERN, Node.js, Express, React, Playwright, GPT-4o</p>
+            </div>
+          </div>
+          <button type="button" class="toggle-resume-btn" id="toggleResumeBtn" aria-label="Toggle Resume Profile">
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+        </header>
+        <div class="resume-body hidden" id="resumeBody">
+          <div class="resume-grid">
+            <div class="resume-col">
+              <div class="form-group">
+                <label for="resumeName">Full Name</label>
+                <input type="text" id="resumeName" value="Sai Harshitha Mandapalli" placeholder="e.g. Jane Doe">
+              </div>
+              <div class="form-group-row">
+                <div class="form-group">
+                  <label for="resumeEmail">Email</label>
+                  <input type="email" id="resumeEmail" value="saiharshithamandapalli@gmail.com"
+                    placeholder="e.g. jane@example.com">
+                </div>
+                <div class="form-group">
+                  <label for="resumePhone">Phone</label>
+                  <input type="text" id="resumePhone" value="+91-7672044351" placeholder="e.g. +1-123-456-7890">
+                </div>
+              </div>
+              <div class="form-group-row">
+                <div class="form-group">
+                  <label for="resumeLinkedIn">LinkedIn URL</label>
+                  <input type="url" id="resumeLinkedIn" value="https://linkedin.com/in/sai-harshitha"
+                    placeholder="e.g. linkedin.com/in/jane">
+                </div>
+                <div class="form-group">
+                  <label for="resumeGitHub">GitHub URL</label>
+                  <input type="url" id="resumeGitHub" value="https://github.com/harshitha-mandapalli"
+                    placeholder="e.g. github.com/jane">
+                </div>
+              </div>
+            </div>
+            <div class="resume-col">
+              <div class="form-group">
+                <label for="resumeSkills">Core Skills (comma separated)</label>
+                <input type="text" id="resumeSkills"
+                  value="Java, JavaScript, Python, C/C++, SQL, Node.js, Express, MongoDB, MySQL, REST API, React, HTML5, CSS3, Tailwind CSS, Playwright, Postman, GPT-4o, Prompt Engineering, CI/CD"
+                  placeholder="e.g. React, Node.js, Python">
+              </div>
+              <div class="form-group">
+                <label for="resumeHighlights">Key Experiences & Project Highlights</label>
+                <textarea id="resumeHighlights" rows="4"
+                  placeholder="Briefly describe your key achievements..."></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="resume-actions">
+            <button type="button" id="resetProfileBtn" class="btn btn-secondary"><i
+                class="fa-solid fa-arrow-rotate-left"></i> Reset to Default</button>
+            <button type="button" id="saveProfileBtn" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i>
+              Save Profile</button>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- Loading / Progress States -->
+      <section id="loadingSection" class="loading-section card hidden">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">
+          <h3>Scraping HNHiring...</h3>
+          <p>Fetching listings, running email de-obfuscation, and cataloging skills.</p>
+        </div>
+        <div class="loading-logs" id="loadingLogs">
+          <div class="log-entry"><i class="fa-solid fa-circle-notch fa-spin"></i> Initializing HTTP request client...
+          </div>
+        </div>
+      </section>
+
+      <!-- Dashboard Results Container -->
+      <section id="resultsSection" class="results-section hidden">
+        <!-- Dashboard Navigation Tabs -->
+        <div class="dashboard-tabs">
+          <button type="button" class="dashboard-tab active" id="tabShowBoard">
+            <i class="fa-solid fa-briefcase"></i> Job & Email Board
+          </button>
+          <button type="button" class="dashboard-tab" id="tabShowCampaign">
+            <i class="fa-solid fa-paper-plane"></i> Email Campaign Center
+          </button>
+        </div>
+
+        <!-- Job Board View -->
+        <div id="boardView">
+          <!-- Stats Row -->
+          <div class="stats-grid">
+            <div class="stats-card card">
+              <div class="stats-icon icon-purple">
+                <i class="fa-solid fa-briefcase"></i>
+              </div>
+              <div class="stats-info">
+                <h4 id="statTotalJobs">0</h4>
+                <p>Total Jobs Scraped</p>
+              </div>
+            </div>
+            <div class="stats-card card">
+              <div class="stats-icon icon-green">
+                <i class="fa-solid fa-envelope"></i>
+              </div>
+              <div class="stats-info">
+                <h4 id="statTotalEmails">0</h4>
+                <p>Emails Found</p>
+              </div>
+            </div>
+            <div class="stats-card card">
+              <div class="stats-icon icon-cyan">
+                <i class="fa-solid fa-building"></i>
+              </div>
+              <div class="stats-info">
+                <h4 id="statUniqueCompanies">0</h4>
+                <p>Unique Companies</p>
+              </div>
+            </div>
+            <div class="stats-card card">
+              <div class="stats-icon icon-amber">
+                <i class="fa-solid fa-stopwatch"></i>
+              </div>
+              <div class="stats-info">
+                <h4 id="statFetchTime">0s</h4>
+                <p>Fetch Duration</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filters and Export Controls -->
+          <div class="controls-card card">
+            <div class="search-filter-wrapper">
+              <i class="fa-solid fa-magnifying-glass search-icon"></i>
+              <input type="text" id="searchInput"
+                placeholder="Filter by company, email domain, or skills (e.g. Go, Python)...">
+            </div>
+            <div class="export-buttons">
+              <button id="exportCsvBtn" class="btn btn-secondary">
+                <i class="fa-solid fa-file-csv"></i> Export CSV
+              </button>
+              <button id="exportJsonBtn" class="btn btn-secondary">
+                <i class="fa-solid fa-file-code"></i> Export JSON
+              </button>
+            </div>
+          </div>
+
+          <!-- Table Card -->
+          <div class="table-card card">
+            <div class="table-responsive">
+              <table class="data-table" id="jobsTable">
+                <thead>
+                  <tr>
+                    <th style="width: 25%">Company</th>
+                    <th style="width: 30%">Role / Title</th>
+                    <th style="width: 25%">Emails</th>
+                    <th style="width: 20%">Keywords & Skills</th>
+                  </tr>
+                </thead>
+                <tbody id="jobsTableBody">
+                  <!-- Dynamic Content Insertion -->
+                </tbody>
+              </table>
+            </div>
+            <div id="noResults" class="no-results hidden">
+              <i class="fa-regular fa-folder-open"></i>
+              <p>No job postings match your filters.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campaign Center View -->
+        <div id="campaignView" class="hidden">
+          <div class="campaign-grid">
+            <!-- Left Side: Configs -->
+            <div class="campaign-config-col">
+              <!-- SMTP Settings Card -->
+              <div class="card campaign-card">
+                <div class="card-header-with-icon">
+                  <i class="fa-solid fa-gears card-header-icon icon-purple-text"></i>
+                  <h3>SMTP Sender Configuration</h3>
+                </div>
+                <div class="smtp-form">
+                  <div class="form-group-row">
+                    <div class="form-group" style="flex: 2;">
+                      <label for="smtpHost">SMTP Host</label>
+                      <input type="text" id="smtpHost" placeholder="e.g. smtp.gmail.com">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                      <label for="smtpPort">Port</label>
+                      <input type="number" id="smtpPort" placeholder="587">
+                    </div>
+                  </div>
+                  <div class="form-group checkbox-group">
+                    <input type="checkbox" id="smtpSecure">
+                    <label for="smtpSecure">Use SSL/TLS (Secure Port 465)</label>
+                  </div>
+                  <div class="form-group">
+                    <label for="smtpUser">Username (Sender Email)</label>
+                    <input type="email" id="smtpUser" placeholder="e.g. sender@gmail.com">
+                  </div>
+                  <div class="form-group">
+                    <label for="smtpPass">Password / App Password</label>
+                    <input type="password" id="smtpPass" placeholder="Enter SMTP password">
+                  </div>
+                  <div class="form-group">
+                    <label for="smtpFromName">Sender Display Name</label>
+                    <input type="text" id="smtpFromName" placeholder="e.g. John Doe">
+                  </div>
+                  <div class="smtp-actions">
+                    <button type="button" id="btnTestSmtp" class="btn btn-secondary">
+                      <i class="fa-solid fa-vial"></i> Test SMTP Connection
+                    </button>
+                    <div id="smtpTestStatus" class="smtp-test-status"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Template Editor Card -->
+              <div class="card campaign-card mt-1-5">
+                <div class="card-header-with-icon">
+                  <i class="fa-solid fa-file-pen card-header-icon icon-cyan-text"></i>
+                  <h3>Email Template Editor</h3>
+                </div>
+                <div class="template-form">
+                  <div class="form-group">
+                    <label for="tplSubject">Subject Template</label>
+                    <input type="text" id="tplSubject" placeholder="Application for {role} at {company}">
+                  </div>
+                  <div class="form-group">
+                    <label for="tplBody">Body Template</label>
+                    <div class="textarea-container">
+                      <div class="formatting-toolbar">
+                        <button type="button" class="btn-format" data-target="tplBody" title="Bold Text (Ctrl+B)">
+                          <i class="fa-solid fa-bold"></i> Bold
+                        </button>
+                      </div>
+                      <textarea id="tplBody" rows="10" placeholder="Dear hiring team at {company}, ..."></textarea>
+                    </div>
+                  </div>
+                  <div class="placeholder-guide">
+                    <span class="guide-title"><i class="fa-solid fa-circle-info"></i> Supported Placeholders:</span>
+                    <div class="placeholders-list">
+                      <span class="placeholder-tag" title="Recipient email">{email}</span>
+                      <span class="placeholder-tag" title="Extracted company name">{company}</span>
+                      <span class="placeholder-tag" title="Extracted role title">{role}</span>
+                      <span class="placeholder-tag" title="Your full name (from Resume Profile)">{resume_name}</span>
+                      <span class="placeholder-tag" title="Your email (from Resume Profile)">{resume_email}</span>
+                      <span class="placeholder-tag" title="Your LinkedIn (from Resume Profile)">{resume_linkedin}</span>
+                      <span class="placeholder-tag" title="Your GitHub (from Resume Profile)">{resume_github}</span>
+                    </div>
+                  </div>
+                  <div style="margin-top: 1rem; display: flex; justify-content: flex-end;">
+                    <button type="button" id="btnSaveTemplate" class="btn btn-secondary btn-sm">
+                      <i class="fa-solid fa-floppy-disk"></i> Save Template
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Side: Campaign Runner -->
+            <div class="campaign-runner-col">
+              <div class="card campaign-card h-full">
+                <div class="card-header-with-icon">
+                  <i class="fa-solid fa-paper-plane card-header-icon icon-green-text"></i>
+                  <h3>Campaign Control & Queue</h3>
+                </div>
+
+                <div class="campaign-controls-bar">
+                  <div class="form-group inline-group" style="margin-bottom: 0;">
+                    <label for="campaignDelay" style="margin-bottom: 0; margin-right: 0.5rem;">Delay (sec):</label>
+                    <input type="number" id="campaignDelay" value="2" min="1" max="60"
+                      style="width: 70px; padding: 0.5rem; background: rgba(10, 14, 23, 0.5); border: 1px solid var(--border-glow); border-radius: var(--border-radius-sm); color: var(--text-primary);">
+                  </div>
+                  <div class="campaign-actions">
+                    <button type="button" id="btnStartCampaign" class="btn btn-primary"
+                      style="background: var(--accent-green); box-shadow: 0 4px 15px var(--accent-green-glow);">
+                      <i class="fa-solid fa-play"></i> Start
+                    </button>
+                    <button type="button" id="btnPauseCampaign" class="btn btn-secondary" disabled>
+                      <i class="fa-solid fa-pause"></i> Pause
+                    </button>
+                    <button type="button" id="btnResetCampaign" class="btn btn-secondary">
+                      <i class="fa-solid fa-rotate-left"></i> Reset Queue
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Progress Section -->
+                <div class="campaign-progress-container hidden" id="campaignProgressSection">
+                  <div class="progress-labels">
+                    <span id="progressText">0 / 0 Sent</span>
+                    <span id="progressPercent">0%</span>
+                  </div>
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <!-- Campaign Console Logs -->
+                <div class="campaign-logs-title">Campaign Logs</div>
+                <div class="campaign-logs" id="campaignLogs">
+                  <div class="log-entry-system">Campaign initialized. Configure SMTP and templates, then click 'Start'.
+                  </div>
+                </div>
+
+                <!-- Recipient Queue Table -->
+                <div class="queue-table-container">
+                  <table class="queue-table">
+                    <thead>
+                      <tr>
+                        <th style="width: 40px; text-align: center;"><input type="checkbox" id="chkSelectAllQueue"
+                            checked></th>
+                        <th>Recipient Email</th>
+                        <th>Target Company / Role</th>
+                        <th style="width: 110px;">Status</th>
+                        <th style="width: 50px; text-align: center;">Retry</th>
+                      </tr>
+                    </thead>
+                    <tbody id="campaignQueueBody">
+                      <!-- Dynamic campaign items go here -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </main>
+
+    <!-- App Footer -->
+    <footer class="app-footer-bar">
+      <p>&copy; 2026 HNHiring Extractor. Handcrafted for premium scraping excellence.</p>
+    </footer>
+  </div>
+
+  <!-- Details View Modal -->
+  <div id="detailsModal" class="modal-overlay hidden">
+    <div class="modal-content card">
+      <header class="modal-header">
+        <div class="modal-title-area">
+          <h2 id="modalCompanyName">Company Name</h2>
+          <p id="modalJobTitle">Job Title</p>
+        </div>
+        <button id="closeModalBtn" class="close-modal-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </header>
+      <div class="modal-body-content">
+        <div class="modal-meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">Poster Profile:</span>
+            <span class="meta-val"><a id="modalPosterLink" href="#" target="_blank"><i
+                  class="fa-brands fa-y-combinator"></i> <span id="modalPosterUser">user</span></a></span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Time:</span>
+            <span class="meta-val" id="modalPostTime">Time</span>
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <h3>Extracted Contact Emails</h3>
+          <div class="emails-flex" id="modalEmailsList">
+            <!-- Emails will be populated here -->
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <h3>Extracted Skills</h3>
+          <div class="skills-flex" id="modalSkillsList">
+            <!-- Skills will be populated here -->
+          </div>
+        </div>
+
+        <div class="modal-section email-template-section">
+          <div class="email-section-header">
+            <div class="email-section-title-tabs">
+              <h3>Tailored Application Email</h3>
+              <div class="email-preview-tabs">
+                <button type="button" class="email-preview-tab active" id="btnEmailTabEdit">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
+                <button type="button" class="email-preview-tab" id="btnEmailTabPreview">
+                  <i class="fa-solid fa-eye"></i> Preview
+                </button>
+              </div>
+            </div>
+            <span class="badge-ai"><i class="fa-solid fa-sparkles"></i> Tailored to Resume & Job</span>
+          </div>
+          <div class="email-preview-container">
+            <div class="email-preview-row">
+              <span class="preview-label">Subject:</span>
+              <div class="preview-value-wrapper">
+                <input type="text" id="modalEmailSubject" value="Application for Software Engineer">
+                <button type="button" id="copySubjectBtn" class="copy-field-btn" title="Copy Subject">
+                  <i class="fa-regular fa-copy"></i>
+                </button>
+              </div>
+            </div>
+            <div class="email-preview-row body-row">
+              <span class="preview-label">Body:</span>
+              <div class="preview-value-wrapper">
+                <div class="textarea-container">
+                  <div class="formatting-toolbar" id="modalFormattingToolbar">
+                    <button type="button" class="btn-format" data-target="modalEmailBody" title="Bold Text (Ctrl+B)">
+                      <i class="fa-solid fa-bold"></i> Bold
+                    </button>
+                  </div>
+                  <textarea id="modalEmailBody" rows="8">Dear hiring team...</textarea>
+                  <div id="modalEmailPreview" class="email-html-preview hidden"></div>
+                </div>
+                <button type="button" id="copyBodyBtn" class="copy-field-btn" title="Copy Body">
+                  <i class="fa-regular fa-copy"></i>
+                </button>
+              </div>
+            </div>
+            <div class="email-action-row">
+              <a href="#" id="sendEmailBtn" class="btn btn-primary send-email-btn" target="_blank">
+                <i class="fa-solid fa-paper-plane"></i> Send Email
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <h3>Full Description</h3>
+          <div class="job-description-raw" id="modalJobDescription">
+            <!-- Raw HTML/text description will go here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Scripts -->
+  <script src="index.js"></script>
+</body>
+
+</html>
